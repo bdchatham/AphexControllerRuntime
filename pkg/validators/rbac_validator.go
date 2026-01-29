@@ -94,9 +94,18 @@ func (v *RBACValidator) validatePolicyRule(ctx context.Context, namespace string
 // checkPermission uses SubjectAccessReview to verify the controller can perform
 // the specified action.
 func (v *RBACValidator) checkPermission(ctx context.Context, namespace, apiGroup, resource, verb string) error {
+	// For service accounts, we must include the standard groups that Kubernetes
+	// assigns to service accounts for RBAC evaluation to work correctly
+	groups := []string{
+		"system:serviceaccounts",
+		fmt.Sprintf("system:serviceaccounts:%s", v.serviceAccountNS),
+		"system:authenticated",
+	}
+
 	sar := &authorizationv1.SubjectAccessReview{
 		Spec: authorizationv1.SubjectAccessReviewSpec{
-			User: fmt.Sprintf("system:serviceaccount:%s:%s", v.serviceAccountNS, v.serviceAccountName),
+			User:   fmt.Sprintf("system:serviceaccount:%s:%s", v.serviceAccountNS, v.serviceAccountName),
+			Groups: groups,
 			ResourceAttributes: &authorizationv1.ResourceAttributes{
 				Namespace: namespace,
 				Verb:      verb,
@@ -112,12 +121,28 @@ func (v *RBACValidator) checkPermission(ctx context.Context, namespace, apiGroup
 			"apiGroup", apiGroup,
 			"resource", resource,
 			"verb", verb,
+			"user", sar.Spec.User,
+			"groups", groups,
 		)
 		return &RBACValidationError{
 			Resource:          formatResourceRef(apiGroup, resource),
 			MissingPermission: verb,
 			Details:           fmt.Sprintf("failed to check permission: %v", err),
 		}
+	}
+
+	v.logger.V(1).Info("SubjectAccessReview created",
+		"namespace", namespace,
+		"apiGroup", apiGroup,
+		"resource", resource,
+		"verb", verb,
+		"user", sar.Spec.User,
+		"groups", groups,
+		"allowed", sar.Status.Allowed,
+		"denied", sar.Status.Denied,
+		"reason", sar.Status.Reason,
+		"evaluationError", sar.Status.EvaluationError,
+	)
 	}
 
 	if !sar.Status.Allowed {
@@ -153,9 +178,17 @@ func (v *RBACValidator) checkPermission(ctx context.Context, namespace, apiGroup
 
 // checkNonResourcePermission checks permission for non-resource URLs.
 func (v *RBACValidator) checkNonResourcePermission(ctx context.Context, url, verb string) error {
+	// For service accounts, we must include the standard groups
+	groups := []string{
+		"system:serviceaccounts",
+		fmt.Sprintf("system:serviceaccounts:%s", v.serviceAccountNS),
+		"system:authenticated",
+	}
+
 	sar := &authorizationv1.SubjectAccessReview{
 		Spec: authorizationv1.SubjectAccessReviewSpec{
-			User: fmt.Sprintf("system:serviceaccount:%s:%s", v.serviceAccountNS, v.serviceAccountName),
+			User:   fmt.Sprintf("system:serviceaccount:%s:%s", v.serviceAccountNS, v.serviceAccountName),
+			Groups: groups,
 			NonResourceAttributes: &authorizationv1.NonResourceAttributes{
 				Path: url,
 				Verb: verb,
@@ -167,6 +200,8 @@ func (v *RBACValidator) checkNonResourcePermission(ctx context.Context, url, ver
 		v.logger.Error(err, "Failed to create SubjectAccessReview for non-resource URL",
 			"url", url,
 			"verb", verb,
+			"user", sar.Spec.User,
+			"groups", groups,
 		)
 		return &RBACValidationError{
 			Resource:          url,
@@ -174,6 +209,17 @@ func (v *RBACValidator) checkNonResourcePermission(ctx context.Context, url, ver
 			Details:           fmt.Sprintf("failed to check permission: %v", err),
 		}
 	}
+
+	v.logger.V(1).Info("Non-resource SubjectAccessReview created",
+		"url", url,
+		"verb", verb,
+		"user", sar.Spec.User,
+		"groups", groups,
+		"allowed", sar.Status.Allowed,
+		"denied", sar.Status.Denied,
+		"reason", sar.Status.Reason,
+		"evaluationError", sar.Status.EvaluationError,
+	)
 
 	if !sar.Status.Allowed {
 		v.logger.Info("Non-resource permission check failed",
