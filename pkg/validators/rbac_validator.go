@@ -131,7 +131,7 @@ func (v *RBACValidator) checkPermission(ctx context.Context, namespace, apiGroup
 		}
 	}
 
-	v.logger.Info("SubjectAccessReview created",
+	v.logger.V(1).Info("SubjectAccessReview created",
 		"namespace", namespace,
 		"apiGroup", apiGroup,
 		"resource", resource,
@@ -209,7 +209,7 @@ func (v *RBACValidator) checkNonResourcePermission(ctx context.Context, url, ver
 		}
 	}
 
-	v.logger.Info("Non-resource SubjectAccessReview created",
+	v.logger.V(1).Info("Non-resource SubjectAccessReview created",
 		"url", url,
 		"verb", verb,
 		"user", sar.Spec.User,
