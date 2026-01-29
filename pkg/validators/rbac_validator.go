@@ -143,7 +143,6 @@ func (v *RBACValidator) checkPermission(ctx context.Context, namespace, apiGroup
 		"reason", sar.Status.Reason,
 		"evaluationError", sar.Status.EvaluationError,
 	)
-	}
 
 	if !sar.Status.Allowed {
 		v.logger.Info("Permission check failed",
