@@ -8,21 +8,6 @@ import (
 
 const orgNamespacePrefix = "org-"
 
-// OrgNamespace derives the organization namespace from the Organization field.
-// Returns org-{organization} for use as the Kubernetes namespace.
-func (kb *KnowledgeBase) OrgNamespace() string {
-	return fmt.Sprintf("%s%s", orgNamespacePrefix, kb.Spec.Organization)
-}
-
-// ValidateOrganization checks that the Organization field is non-empty.
-// Returns an error when the organization field is empty, nil otherwise.
-func (kb *KnowledgeBase) ValidateOrganization() error {
-	if kb.Spec.Organization == "" {
-		return fmt.Errorf("organization field cannot be empty")
-	}
-	return nil
-}
-
 // Source defines a single knowledge source to track
 type Source struct {
 	// URL is the source repository URL (supports GitHub, GitLab, Bitbucket, etc.)
@@ -164,6 +149,21 @@ type KnowledgeBase struct {
 
 	Spec   KnowledgeBaseSpec   `json:"spec,omitempty"`
 	Status KnowledgeBaseStatus `json:"status,omitempty"`
+}
+
+// OrgNamespace derives the organization namespace from the Organization field.
+// Returns org-{organization} for use as the Kubernetes namespace.
+func (kb *KnowledgeBase) OrgNamespace() string {
+	return fmt.Sprintf("%s%s", orgNamespacePrefix, kb.Spec.Organization)
+}
+
+// ValidateOrganization checks that the Organization field is non-empty.
+// Returns an error when the organization field is empty, nil otherwise.
+func (kb *KnowledgeBase) ValidateOrganization() error {
+	if kb.Spec.Organization == "" {
+		return fmt.Errorf("organization field cannot be empty")
+	}
+	return nil
 }
 
 // +kubebuilder:object:root=true
