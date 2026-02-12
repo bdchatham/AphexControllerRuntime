@@ -44,22 +44,9 @@ func (h *HealthState) RecordSuccess(controller string) {
 	h.lastSuccessfulReconcile[controller] = time.Now()
 }
 
-// IsHealthy returns true if all registered controllers have had recent successful reconciliations.
-// A controller is considered healthy if it has reconciled successfully within the health threshold.
+// IsHealthy returns true if the controller process is alive.
+// Reconciliation activity is tracked for observability but does not affect liveness.
 func (h *HealthState) IsHealthy() bool {
-	h.mu.RLock()
-	defer h.mu.RUnlock()
-
-	if len(h.lastSuccessfulReconcile) == 0 {
-		return true
-	}
-
-	now := time.Now()
-	for _, lastSuccess := range h.lastSuccessfulReconcile {
-		if now.Sub(lastSuccess) > h.healthThreshold {
-			return false
-		}
-	}
 	return true
 }
 
