@@ -43,7 +43,6 @@ const (
 	LabelRepo         = "platform.aphex/repo"
 	LabelOwnerName    = "platform.aphex/owner-name"
 	LabelOwnerKind    = "platform.aphex/owner-kind"
-	LabelAphexOrg     = "aphex.dev/org"
 )
 
 // Label values for managed-by labels.
