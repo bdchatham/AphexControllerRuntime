@@ -10,9 +10,15 @@ const orgNamespacePrefix = "org-"
 
 // Source defines a single knowledge source to track
 type Source struct {
-	// URL is the source repository URL (supports GitHub, GitLab, Bitbucket, etc.)
+	// RepoOrg is the repository organization or owner (e.g., "bdchatham")
 	// +kubebuilder:validation:Required
-	URL string `json:"url"`
+	// +kubebuilder:validation:Pattern=`^[a-zA-Z0-9._-]+$`
+	RepoOrg string `json:"repoOrg"`
+
+	// RepoName is the repository name (e.g., "AphexControllerRuntime")
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Pattern=`^[a-zA-Z0-9._-]+$`
+	RepoName string `json:"repoName"`
 
 	// Branch is the Git branch to track (default: mainline)
 	// +kubebuilder:default:="mainline"
@@ -28,6 +34,11 @@ type Source struct {
 	// Supports glob patterns (e.g., ".kiro/docs" for docs, "src/**" for code)
 	// +optional
 	Paths []string `json:"paths,omitempty"`
+}
+
+// FullName returns the GitHub-style "org/repo" identifier.
+func (s *Source) FullName() string {
+	return fmt.Sprintf("%s/%s", s.RepoOrg, s.RepoName)
 }
 
 // MCPConfig defines the MCP server configuration

@@ -117,6 +117,15 @@ spec:
                       items:
                         type: string
                       type: array
+                    repoName:
+                      description: RepoName is the repository name (e.g., "AphexControllerRuntime")
+                      pattern: ^[a-zA-Z0-9._-]+$
+                      type: string
+                    repoOrg:
+                      description: RepoOrg is the repository organization or owner
+                        (e.g., "bdchatham")
+                      pattern: ^[a-zA-Z0-9._-]+$
+                      type: string
                     sourceType:
                       description: SourceType classifies the source as documentation
                         or code
@@ -124,12 +133,9 @@ spec:
                       - docs
                       - code
                       type: string
-                    url:
-                      description: URL is the source repository URL (supports GitHub,
-                        GitLab, Bitbucket, etc.)
-                      type: string
                   required:
-                  - url
+                  - repoName
+                  - repoOrg
                   type: object
                 minItems: 1
                 type: array

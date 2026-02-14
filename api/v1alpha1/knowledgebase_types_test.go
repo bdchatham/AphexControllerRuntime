@@ -7,7 +7,7 @@ import (
 	"pgregory.net/rapid"
 )
 
-func defaultSourceType(source Source) string {
+func defaultSourceType(source *Source) string {
 	if source.SourceType == "" {
 		return "docs"
 	}
@@ -76,7 +76,6 @@ func TestProperty_EmptyOrganizationValidation(t *testing.T) {
 func TestProperty_DefaultSourceType(t *testing.T) {
 	rapid.Check(t, func(t *rapid.T) {
 		sourceType := rapid.SampledFrom([]string{"", "docs", "code"}).Draw(t, "sourceType")
-		url := rapid.StringMatching(`https://github\.com/[a-z]{1,10}/[a-z]{1,10}`).Draw(t, "url")
 		branch := rapid.SampledFrom([]string{"", "main", "mainline", "develop"}).Draw(t, "branch")
 
 		pathCount := rapid.IntRange(0, 3).Draw(t, "pathCount")
@@ -86,13 +85,14 @@ func TestProperty_DefaultSourceType(t *testing.T) {
 		}
 
 		source := Source{
-			URL:        url,
+			RepoOrg:    "testorg",
+			RepoName:   "testrepo",
 			Branch:     branch,
 			SourceType: sourceType,
 			Paths:      paths,
 		}
 
-		result := defaultSourceType(source)
+		result := defaultSourceType(&source)
 
 		if sourceType == "" {
 			if result != "docs" {
