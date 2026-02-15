@@ -68,7 +68,7 @@ spec:
                 properties:
                   apiKeySecretName:
                     description: |-
-                      ApiKeySecretName is the name of a Secret (in the KB namespace) containing
+                      APIKeySecretName is the name of a Secret (in the KB namespace) containing
                       the agent's API key used to authenticate headless CLI invocations.
                     type: string
                   model:

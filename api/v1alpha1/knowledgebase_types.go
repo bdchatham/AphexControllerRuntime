@@ -70,10 +70,10 @@ type MCPConfig struct {
 // sync pipeline. Required when any source has sourceType "code", since SCIP
 // indexes need an LLM to produce natural-language summaries with ARN references.
 type AgentConfig struct {
-	// ApiKeySecretName is the name of a Secret (in the KB namespace) containing
+	// APIKeySecretName is the name of a Secret (in the KB namespace) containing
 	// the agent's API key used to authenticate headless CLI invocations.
 	// +kubebuilder:validation:Required
-	ApiKeySecretName string `json:"apiKeySecretName"`
+	APIKeySecretName string `json:"apiKeySecretName"`
 
 	// Model is the model identifier the agent should use for summary generation.
 	// If omitted, the agent uses its default model.
