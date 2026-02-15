@@ -61,6 +61,24 @@ spec:
           spec:
             description: KnowledgeBaseSpec defines the desired state of KnowledgeBase
             properties:
+              agent:
+                description: |-
+                  Agent configures the AI agent for the generate-summaries step of the
+                  sync pipeline. Required when any source has sourceType "code".
+                properties:
+                  apiKeySecretName:
+                    description: |-
+                      ApiKeySecretName is the name of a Secret (in the KB namespace) containing
+                      the agent's API key used to authenticate headless CLI invocations.
+                    type: string
+                  model:
+                    description: |-
+                      Model is the model identifier the agent should use for summary generation.
+                      If omitted, the agent uses its default model.
+                    type: string
+                required:
+                - apiKeySecretName
+                type: object
               description:
                 description: Description provides context about this knowledge base
                 type: string
