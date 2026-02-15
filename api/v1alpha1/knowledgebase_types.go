@@ -66,6 +66,21 @@ type MCPConfig struct {
 	Replicas int32 `json:"replicas,omitempty"`
 }
 
+// AgentConfig configures the AI agent used for summary generation in the
+// sync pipeline. Required when any source has sourceType "code", since SCIP
+// indexes need an LLM to produce natural-language summaries with ARN references.
+type AgentConfig struct {
+	// ApiKeySecretName is the name of a Secret (in the KB namespace) containing
+	// the agent's API key used to authenticate headless CLI invocations.
+	// +kubebuilder:validation:Required
+	ApiKeySecretName string `json:"apiKeySecretName"`
+
+	// Model is the model identifier the agent should use for summary generation.
+	// If omitted, the agent uses its default model.
+	// +optional
+	Model string `json:"model,omitempty"`
+}
+
 // KnowledgeBaseSpec defines the desired state of KnowledgeBase
 type KnowledgeBaseSpec struct {
 	// Name is the human-readable knowledge base name
@@ -90,6 +105,11 @@ type KnowledgeBaseSpec struct {
 	// If set, an MCP server will be provisioned. If nil/omitted, no MCP server is created.
 	// +optional
 	MCP *MCPConfig `json:"mcp,omitempty"`
+
+	// Agent configures the AI agent for the generate-summaries step of the
+	// sync pipeline. Required when any source has sourceType "code".
+	// +optional
+	Agent *AgentConfig `json:"agent,omitempty"`
 }
 
 // MCPStatus defines the observed state of the MCP server
