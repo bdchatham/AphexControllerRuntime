@@ -19,6 +19,7 @@ const (
 	EventTaskResolverServiceAccount  = "event-task-resolver"
 	ESOSecretsReaderAccount          = "eso-secrets-reader"
 	PlatformControllerServiceAccount = "platform-controller"
+	KnowledgeGeneratorServiceAccount = "knowledge-generator"
 )
 
 // Namespace names and defaults.
