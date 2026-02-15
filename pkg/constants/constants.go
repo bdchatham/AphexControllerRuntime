@@ -16,6 +16,7 @@ const (
 const (
 	PipelineRunnerServiceAccount     = "pipeline-runner"
 	EventListenerServiceAccount      = "eventlistener"
+	EventTaskResolverServiceAccount  = "event-task-resolver"
 	ESOSecretsReaderAccount          = "eso-secrets-reader"
 	PlatformControllerServiceAccount = "platform-controller"
 )
@@ -101,6 +102,7 @@ const (
 	OrganizationAdminRoleName     = "organization-admin"
 	ArgoCDApplicationDeployerRole = "argocd-application-deployer"
 	EventListenerAccessRole       = "eventlistener-access"
+	EventTaskResolverRole         = "event-task-resolver"
 )
 
 // Tekton resource names.
