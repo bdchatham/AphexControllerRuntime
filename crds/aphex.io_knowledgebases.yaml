@@ -66,10 +66,10 @@ spec:
                   Agent configures the AI agent for the generate-summaries step of the
                   sync pipeline. Required when any source has sourceType "code".
                 properties:
-                  apiKeySecretName:
+                  credentialSecretName:
                     description: |-
-                      APIKeySecretName is the name of a Secret (in the KB namespace) containing
-                      the agent's API key used to authenticate headless CLI invocations.
+                      CredentialSecretName is the property name in the org secret store
+                      containing a JSON blob with auth credentials for headless CLI invocations.
                     type: string
                   model:
                     description: |-
@@ -77,7 +77,7 @@ spec:
                       If omitted, the agent uses its default model.
                     type: string
                 required:
-                - apiKeySecretName
+                - credentialSecretName
                 type: object
               description:
                 description: Description provides context about this knowledge base
