@@ -126,6 +126,10 @@ type MCPStatus struct {
 	// +optional
 	ServiceURL string `json:"serviceURL,omitempty"`
 
+	// ExternalURL is the external gateway URL for the MCP server
+	// +optional
+	ExternalURL string `json:"externalURL,omitempty"`
+
 	// ReadyReplicas is the number of ready MCP server replicas
 	// +optional
 	ReadyReplicas int32 `json:"readyReplicas,omitempty"`
